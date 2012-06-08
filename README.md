@@ -4,7 +4,7 @@ You may use this gem if you are using a continuous integration server and wish t
 
 ### Usage
 Add `motion-specwrap` to your Gemfile, run `bundle`, add `motion-specwrap` to your project's Rakefile.
-Now you may execute `bundle exec specwrap` instead of `bundle exec rake spec` in order to get a proper exit value corresponding to your tests passing or failing. Woohoo!
+Now you may execute `bundle exec motion-specwrap` instead of `bundle exec rake spec` in order to get a proper exit value corresponding to your tests passing or failing. Woohoo!
 
 ### The Problem
 * When running "rake spec" in your RubyMotion project, you always get an exit status of 0, irrespective of the tests passing or failing. I believe this is the case because when checking the status code, we are actually getting the Simulator's status code, despite Bacon exiting (from within the context of the simulator) with a proper code.
