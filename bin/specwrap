@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
-tmpfile = "specwrap-out.tmp.txt"
-regexp = /Specwrap captured exit status code: (\d*)/
+require 'tempfile'
 
-FileUtils.rm(tmpfile) if File.exists?(tmpfile)
-FileUtils.touch tmpfile
+regexp = /Specwrap captured exit status code: (\d*)/
 
 def watch_for(file, pattern)
   linebuf = ""
@@ -27,16 +25,19 @@ def watch_for(file, pattern)
   end
 end
 
-t = Thread.new do
-  watch_for(tmpfile, regexp)
-end
+file = Tempfile.new "specwrap"
 
-Open3.popen2e("rake spec > #{tmpfile}") do |stdin, out_and_err, wait_thr|
-  while (line = out_and_err.gets)
-    puts line
+begin
+  file_watch_thread = Thread.new do
+    watch_for(file.path, regexp)
   end
+  Open3.popen2e("rake spec > #{file.path}") do |stdin, out_and_err, wait_thr|
+    while (line = out_and_err.gets)
+      puts line
+    end
+  end
+ensure
+  file_watch_thread.join unless file_watch_thread.nil?
+  file.close
+  file.unlink
 end
-
-t.join
-
-FileUtils.rm(tmpfile) if File.exists?(tmpfile)
