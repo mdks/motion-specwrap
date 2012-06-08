@@ -1,22 +1,42 @@
 #!/usr/bin/env ruby
-require 'Open3'
-require 'FileUtils'
 tmpfile = "specwrap-out.tmp.txt"
+regexp = /Specwrap captured exit status code: (\d*)/
+
 FileUtils.rm(tmpfile) if File.exists?(tmpfile)
-stdin, stdout, wait_thr = Open3.popen2e("rake spec > #{tmpfile}")
-@stat = 255
-while (l = stdout.gets)
-  puts l
-end
-stdin.close
-stdout.close
-File.open(tmpfile, "r") do |f|
-  f.each_line do |line|
-    puts line
-    if (matches = line.match(/Exit status: (\d*)/))
-      @stat = matches[1].to_i
+FileUtils.touch tmpfile
+
+def watch_for(file, pattern)
+  linebuf = ""
+  f = File.open(file,"r")
+  f.seek(0,IO::SEEK_END)
+  while true do
+    select([f])
+    line = f.gets
+    if !line.nil?
+      if (matches = line.match(pattern))
+        exit(matches[1].to_i)
+      else
+        if line.include? "\n"
+          puts linebuf + line
+          linebuf.clear
+        else
+          linebuf << line
+        end
+      end
     end
   end
 end
+
+t = Thread.new do
+  watch_for(tmpfile, regexp)
+end
+
+Open3.popen2e("rake spec > #{tmpfile}") do |stdin, out_and_err, wait_thr|
+  while (line = out_and_err.gets)
+    puts line
+  end
+end
+
+t.join
+
 FileUtils.rm(tmpfile) if File.exists?(tmpfile)
-exit(@stat)

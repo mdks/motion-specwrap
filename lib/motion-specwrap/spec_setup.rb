@@ -9,7 +9,7 @@ module Bacon
       # DONE
       handle_summary
       status_code = Counter.values_at(:failed, :errors).inject(:+)
-      puts "Exit status: #{status_code}"
+      puts "Specwrap captured exit status code: #{status_code}"
       exit(status_code)
     end
   end
