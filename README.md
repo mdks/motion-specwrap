@@ -1,5 +1,4 @@
 # Motion::Specwrap
-
 You may use this gem if you are using a continuous integration server and wish that RubyMotion's `rake spec` command behaved as you would expect (e.g. return an exit status code that reflects your build condition)
 
 ### Usage
