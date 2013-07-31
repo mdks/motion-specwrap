@@ -1,18 +1,24 @@
 #!/usr/bin/env ruby
 require 'tempfile'
+require 'open3'
 
-regexp = /Specwrap captured exit status code: (\d*)/
+regexp = / (\d*) failures, (\d*) errors/
+
+$Run = true
 
 def watch_for(file, pattern)
   linebuf = ""
   f = File.open(file,"r")
   f.seek(0,IO::SEEK_END)
-  while true do
+  while $Run do
     select([f])
     line = f.gets
     if !line.nil?
       if (matches = line.match(pattern))
-        exit(matches[1].to_i)
+        exit_value = matches[1].to_i+matches[2].to_i
+        puts line
+        puts " * motion-specwrap read the summary to exit(#{exit_value})"
+        exit(exit_value)
       else
         if line.include? "\n"
           puts linebuf + line
@@ -31,13 +37,19 @@ begin
   file_watch_thread = Thread.new do
     watch_for(file.path, regexp)
   end
+
   Open3.popen2e("rake spec > #{file.path}") do |stdin, out_and_err, wait_thr|
     while (line = out_and_err.gets)
       puts line
     end
+    puts " * motion-specwrap should have exited already -- could not determine the correct exit value"
+    $Run = false
   end
+rescue => ex
+  puts ex
 ensure
-  file_watch_thread.join unless file_watch_thread.nil?
+  file_watch_thread.join
   file.close
   file.unlink
 end
+

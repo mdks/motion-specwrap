@@ -14,14 +14,18 @@ Now you may execute `bundle exec motion-specwrap` instead of `bundle exec rake s
 1. Bacon is made to output its exit status code to standard output, such that:
 2. A wrapper script is provided which runs rake spec as normal, checks the exit status code printed by Bacon, and uses it to exit with the correct exit status code.
 
-### Final Remarks
-I am hoping that lrz goes ahead and solves the original problem in a later patch to RubyMotion. Until then, we can use this.
-
 ### Update: July 30, 2013
 
 I'm back on the RM scene again, setting up CI, etc.
 
-Unfortunately it looks like HipByte's fix has regressed: 
+Unfortunately it looks like HipByte's fix has regressed in that failing
+specs should NOT be returning an exit status of 0.
+
+This means this gem has again become relevant.
+
+There were some issues with it but I've just released v1.0.0 which is a
+true wrapper and does not monkeypatch anything like the previous v0.1
+did.
 
 ```
 minivan:baitmotion (master*) $ rake spec
