@@ -16,3 +16,36 @@ Now you may execute `bundle exec motion-specwrap` instead of `bundle exec rake s
 
 ### Final Remarks
 I am hoping that lrz goes ahead and solves the original problem in a later patch to RubyMotion. Until then, we can use this.
+
+### Update: July 30, 2013
+
+I'm back on the RM scene again, setting up CI, etc.
+
+Unfortunately it looks like HipByte's fix has regressed: 
+
+```
+minivan:baitmotion (master*) $ rake spec
+     Build ./build/iPhoneSimulator-6.1-Development
+      Link ./build/iPhoneSimulator-6.1-Development/baitmotion_spec.app/baitmotion
+    Create ./build/iPhoneSimulator-6.1-Development/baitmotion_spec.app/Info.plist
+    Create ./build/iPhoneSimulator-6.1-Development/baitmotion_spec.app/PkgInfo
+    Create ./build/iPhoneSimulator-6.1-Development/baitmotion_spec.dSYM
+  Simulate ./build/iPhoneSimulator-6.1-Development/baitmotion_spec.app
+2013-07-30 19:25:26.772 baitmotion[42697:c07] Application windows are expected to have a root view controller at the end of application launch
+Application 'baitmotion'
+  - has one window [FAILED - 1.==(2) failed]
+
+Bacon::Error: 1.==(2) failed
+  spec.rb:690:in `satisfy:': Application 'baitmotion' - has one window
+	spec.rb:704:in `method_missing:'
+	spec.rb:315:in `block in run_spec_block'
+	spec.rb:439:in `execute_block'
+	spec.rb:315:in `run_spec_block'
+	spec.rb:330:in `run'
+
+1 specifications (1 requirements), 1 failures, 0 errors
+minivan:baitmotion (master*) $ echo $?
+0
+```
+
+That is not supposed to be 0! I will need to continue supporting this gem in the meanwhile but I have contacted HipByte about this.
