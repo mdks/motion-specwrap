@@ -53,3 +53,70 @@ minivan:baitmotion (master*) $ echo $?
 ```
 
 That is not supposed to be 0! I will need to continue supporting this gem in the meanwhile but I have contacted HipByte about this.
+
+---
+
+HipByte issue for this: http://hipbyte.myjetbrains.com/youtrack/issue/RM-230
+
+## motion-specwrap output
+
+```
+➜  baitmotion git:(master) ✗ bundle exec motion-specwrap
+================================================================================
+A new version of RubyMotion is available. Run `sudo motion update' to upgrade.
+================================================================================
+
+     Build ./build/iPhoneSimulator-6.1-Development
+   Compile /Users/keyvan/baitmotion/build/redgreen_style_config.rb
+   Compile ./spec/main_spec.rb
+      Link ./build/iPhoneSimulator-6.1-Development/baitmotion_spec.app/baitmotion
+    Create ./build/iPhoneSimulator-6.1-Development/baitmotion_spec.dSYM
+  Simulate ./build/iPhoneSimulator-6.1-Development/baitmotion_spec.app
+Bacon Output Style: :full
+Application 'baitmotion'
+  - has one window
+ [✓] This test has passed! Good job!
+
+  - foo
+ [✗] This test has not passed: FAILED - 1.==(2) failed!
+ [FAILED - 1.==(2) failed]
+ BACKTRACE: Bacon::Error: 1.==(2) failed
+	spec.rb:685:in `satisfy:': Application 'baitmotion' - foo
+	spec.rb:699:in `method_missing:'
+	spec.rb:315:in `block in run_spec_block'
+	spec.rb:439:in `execute_block'
+	spec.rb:315:in `run_spec_block'
+	spec.rb:330:in `run'
+
+
+  - foo
+ [✗] This test has not passed: FAILED - 1.==(2) failed!
+ [FAILED - 1.==(2) failed]
+ BACKTRACE: Bacon::Error: 1.==(2) failed
+	spec.rb:685:in `satisfy:': Application 'baitmotion' - foo
+	spec.rb:699:in `method_missing:'
+	spec.rb:315:in `block in run_spec_block'
+	spec.rb:439:in `execute_block'
+	spec.rb:315:in `run_spec_block'
+	spec.rb:330:in `run'
+
+
+  - foo
+ [✗] This test has not passed: FAILED - 1.==(2) failed!
+ [FAILED - 1.==(2) failed]
+ BACKTRACE: Bacon::Error: 1.==(2) failed
+	spec.rb:685:in `satisfy:': Application 'baitmotion' - foo
+	spec.rb:699:in `method_missing:'
+	spec.rb:315:in `block in run_spec_block'
+	spec.rb:439:in `execute_block'
+	spec.rb:315:in `run_spec_block'
+	spec.rb:330:in `run'
+
+
+
+4 specifications (4 requirements), 3 failures, 0 errors
+ * motion-specwrap read the summary to exit(3)
+➜  baitmotion git:(master) ✗ echo $?
+3
+➜  baitmotion git:(master) ✗
+```
